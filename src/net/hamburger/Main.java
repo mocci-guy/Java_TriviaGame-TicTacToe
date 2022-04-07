@@ -6,7 +6,6 @@ public class Main {
 
     public static void main(String[] args) {
         /* EXERCISE & SOLUTION 2  */
-
         /*
          * Exercise 2:
          * a) Re-create the Trivia Game from before. This time with 5 Questions & 5 Answers!
@@ -23,7 +22,6 @@ public class Main {
          *         You will need to use Loops here as well!
          *
          */
-
         /* System.out.println("|-|-|-|-| !TRIVIA GAME! |-|-|-|-|");
 
         String[] questions = new String[5];
@@ -56,32 +54,26 @@ public class Main {
                 youWantContinue = false;
             }
         }           */
-        System.out.println("Крестики-нолики!");
 
-        String[][] crossZero = {{"_","_","_"}, {"_","_","_"}, {"_","_","_"}};
+        System.out.println("Крестики-нолики!");
+        String[][] crossZero = {{"_","_","_","_","_","_","_","_","_"}, {"_","_","_","_","_","_","_","_","_"}, {"_","_","_","_","_","_","_","_","_"}};
         gridGeneration(crossZero);
 
         for (int i = 0; i < 10; i++){
             int result = xPass(crossZero);
-            int x;
-            int y;
-            x = (result - (result % 10))/10;
-            y = result % 10;
-            /* boolean validation = validation(x,y);
-            if (!validation){
-                System.out.println("Недопустимые координаты!");
-                break;
-            }   */
-
-
+            while (result == 0){
+                result = xPass(crossZero);
+            }
+            gridGeneration(crossZero);
+            result = yPass(crossZero);
+            while (result == 0){
+                result = yPass(crossZero);
+            }
             gridGeneration(crossZero);
         }
-
-
-
     }
 
-    public static int xPass(String[][] crossZero) {
+    public static int xPass(String[][] crossZero) {     // Ход игрока Х с валидацией по координатам и знаку
         System.out.println("Ход игрока: Х");
         System.out.println("Первая цифра - строка");
         System.out.println("Вторая цифра - столбец");
@@ -91,61 +83,57 @@ public class Main {
         int iCoordinate = Character.getNumericValue(coordinate.charAt(0));
         int jCoordinate = Character.getNumericValue(coordinate.charAt(1));
 
-        boolean isValid = validation(iCoordinate, jCoordinate);
+        boolean isValid = validation(iCoordinate, jCoordinate);         // Валидация по координатам (не выходить за рамки поля)
         if (isValid){
-            crossZero[iCoordinate][jCoordinate] = "X";
+            iCoordinate = iCoordinate - 1;
+            jCoordinate = jCoordinate - 1;
+            if (!crossZero[iCoordinate][jCoordinate].equals("_")){      // Валидация по знаку (нельзя записать значение в занятую клетку)
+                System.out.println("Данная клетка уже занята!!!");
+                return 0;
+            } else {
+                crossZero[iCoordinate][jCoordinate] = "X";
+                return ((iCoordinate+1)*10)+jCoordinate+1;
+            }
         } else {
-            Integer nothing = null;
-            iCoordinate = nothing;
-            jCoordinate = nothing;
             System.out.println("Недопустимые координаты!!!");
+            return 0;
         }
-
-        iCoordinate = iCoordinate - 1;
-        jCoordinate = jCoordinate - 1;
-
-        return ((iCoordinate+1)*10)+jCoordinate+1;
-
     }
-
-
-  /*  public static boolean validation(int x, int y) {
-        boolean isEqual;
-        if ((x<4 || y<4)) {
-            isEqual = true;
-        } else {
-            isEqual = false;
-        }
-        return isEqual;
-    } */
-
     public static boolean validation(int x, int y) {
         boolean isEqual;
-        if ((x<4 || y<4)) {
+        if ((x < 4) & (y < 4)) {
             isEqual = true;
         } else {
             isEqual = false;
         }
         return isEqual;
     }
-
-    // (crossZero[x-1][y-1]) != "X" && (crossZero[x-1][y-1]) != "0")
-
-    public static int yPass(String[][] crossZero) {
+    public static int yPass(String[][] crossZero) {             // Ход игрока 0 с валидацией по координатам и знаку
         System.out.println("Ход игрока: 0");
         System.out.println("Первая цифра - строка");
         System.out.println("Вторая цифра - столбец");
         Scanner scannerI = new Scanner(System.in);
-        String сoordinate = scannerI.next();
-        int iCoordinate = Character.getNumericValue(сoordinate.charAt(0));
-        int jCoordinate = Character.getNumericValue(сoordinate.charAt(1));
-        iCoordinate = iCoordinate - 1;
-        jCoordinate = jCoordinate - 1;
-        crossZero[iCoordinate][jCoordinate] = "0";
+        String coordinate = scannerI.next();
 
-        return (Character.getNumericValue(сoordinate.charAt(0))*10)+Character.getNumericValue(сoordinate.charAt(1));
+        int iCoordinate = Character.getNumericValue(coordinate.charAt(0));
+        int jCoordinate = Character.getNumericValue(coordinate.charAt(1));
+
+        boolean isValid = validation(iCoordinate, jCoordinate);      // Валидация по координатам (не выходить за рамки поля)
+        if (isValid){
+            iCoordinate = iCoordinate - 1;
+            jCoordinate = jCoordinate - 1;
+            if (!crossZero[iCoordinate][jCoordinate].equals("_")){    // Валидация по знаку (нельзя записать значение в занятую клетку)
+                System.out.println("Данная клетка уже занята!!!");
+                return 0;
+            } else {
+                crossZero[iCoordinate][jCoordinate] = "0";
+                return ((iCoordinate+1)*10)+jCoordinate+1;
+            }
+        } else {
+            System.out.println("Недопустимые координаты!!!");
+            return 0;
+        }
     }
-
     public static void gridGeneration(String[][] crossZero) {
         for (int i = 0; i < 3; i++) {  //идём по строкам
             for (int j = 0; j < 3; j++) {//идём по столбцам
@@ -154,6 +142,6 @@ public class Main {
             System.out.println();//перенос строки ради визуального сохранения табличной формы
         }
     }
-
+    public static void checkWinner(){}
     }
 
